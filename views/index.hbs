@@ -1,0 +1,56 @@
+<!doctype>
+<html>
+
+<head>
+<script type="text/javascript" src="../dist/web3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+  $('.alert-message').val('');
+  var  Web3 = require('web3');
+
+  function submit() {
+    var web3 = new Web3();
+    web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
+
+    var coinbase = web3.eth.coinbase;
+    console.log(coinbase);
+
+    var balance = web3.eth.getBalance(coinbase);
+    console.log(balance.toString(10));
+
+
+    var from = $('.from-addr').val().trim();
+    var to = $('.to-addr').val().trim();
+    var amount = web3.toWei($('.send-amount').val().trim(), 'wei');
+
+    var transact = web3.eth.sendTransaction({from: from, to: to, value: amount}, function(err, resp) {
+      if (err) {
+        $('.alert-message').val('Something went wrong: ' + err);
+      } else {
+        // SUCCESSFUL transaction will return a 32 Bytes transaction hash as HEX string.
+        $('.alert-message').val('Succefully sent with transaction hash: ' + resp);
+      }
+    });
+  }
+
+</script>
+</head>
+<body>
+    <div> From Address:
+      <input class="from-addr"></div>
+    </div>
+    <br>
+    <div>To Address:
+      <input class="to-addr"></input>
+    </div>
+    <br>
+    <div>Amount (Unit: wei):
+      <input class="send-amount"></input>
+    </div>
+    <br>
+    <button type="button" onClick="submit();">submit</button>
+    <br>
+    <div class="alert-message"></div>
+</body>
+</html>
